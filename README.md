@@ -74,6 +74,9 @@ pip install flask groq dotenv psycopg2-binary -i https://pypi.tuna.tsinghua.edu.
 
 ## Project Structure
 
+## Project Structure
+
+```mermaid
 graph TD
     A[AI Customer Care Bot] --> B(app.py)
     A --> C(database.py)
@@ -87,6 +90,7 @@ graph TD
     D --> J[FAQ dataset]
     E --> K[Environment variables (API keys, DB connection)]
     G --> L[Frontend chat interface]
+```
 
 ## Database Setup
 
