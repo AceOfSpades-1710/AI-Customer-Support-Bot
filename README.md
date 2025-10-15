@@ -80,6 +80,7 @@ pip install flask groq dotenv psycopg2-binary -i https://pypi.tuna.tsinghua.edu.
 - **Schema**: sessions table with session_id (PK) and history (TEXT for chat logs).
 
 ## Video Demo Link
+https://drive.google.com/file/d/17DYVrhmzOTB0voL7dsgDAgoIFEEP-jRa/view?usp=sharing
 
 ## Project Structure
 
