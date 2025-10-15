@@ -72,7 +72,14 @@ pip install flask groq dotenv psycopg2-binary -i https://pypi.tuna.tsinghua.edu.
 - Ask "How to fix my spaceship?" to trigger escalation.
 - Switch sessions via the sidebar to see stored history.
 
-## Project Structure
+## Database Setup
+
+- **Migration: Switched from local SQLite (sessions.db) to Neon Postgres for scalable session tracking.
+- **Connection: Set NEON_KEY in .env with your Neon connection string.
+- **Install: pip install psycopg2-binary.
+- **Schema: sessions table with session_id (PK) and history (TEXT for chat logs).
+
+## Video Demo Link
 
 ## Project Structure
 
@@ -85,18 +92,9 @@ graph TD
     A --> F(static)
     F --> G(index.html)
 
-    B --> H[Flask backend with Groq integration]
-    C --> I[Database operations for Neon Postgres]
-    D --> J[FAQ dataset]
-    E --> K[Environment variables (API keys, DB connection)]
-    G --> L[Frontend chat interface]
-```
-
-## Database Setup
-
-- **Migration: Switched from local SQLite (sessions.db) to Neon Postgres for scalable session tracking.
-- **Connection: Set NEON_KEY in .env with your Neon connection string.
-- **Install: pip install psycopg2-binary.
-- **Schema: sessions table with session_id (PK) and history (TEXT for chat logs).
-
-## Video Demo Link
+    B --> H["app.py"]
+    C --> I["database.py"]
+    D --> J["faqs.json"]
+    E --> K[".env"]
+    F --> L["static"]
+    G --> M["index.html"]
