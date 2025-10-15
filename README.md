@@ -57,24 +57,23 @@ pip install flask groq dotenv psycopg2-binary -i https://pypi.tuna.tsinghua.edu.
 }
 ```
 
-##Usage
+## Usage
 
-Run the Application:
-python3 app.py
-
-Access the Bot:
-
-Open your browser and go to http://127.0.0.1:5000/.
-Start chatting! Use the "+ New Chat" button to begin a new session.
+1. **Run the Application**:
+   python3 app.py
 
 
-Test Features:
+2. **Access the Bot**:
+- Open your browser and go to [http://127.0.0.1:5000/](http://127.0.0.1:5000/).
+- Start chatting! Use the "+ New Chat" button to begin a new session.
 
-Say "My name is Alice" and later "What is my name?" to test memory.
-Ask "How to fix my spaceship?" to trigger escalation.
-Switch sessions via the sidebar to see stored history.
+3. **Test Features**:
+- Say "My name is Alice" and later "What is my name?" to test memory.
+- Ask "How to fix my spaceship?" to trigger escalation.
+- Switch sessions via the sidebar to see stored history.
 
-##Project Structure
+## Project Structure
+
 AI Customer Care Bot/
 ├── app.py          # Flask backend with Groq integration
 ├── database.py     # Database operations for Neon Postgres
@@ -83,11 +82,11 @@ AI Customer Care Bot/
 └── static/
     └── index.html  # Frontend chat interface
 
-##Database Setup
+## Database Setup
 
 Migration: Switched from local SQLite (sessions.db) to Neon Postgres for scalable session tracking.
 Connection: Set NEON_KEY in .env with your Neon connection string.
 Install: pip install psycopg2-binary.
 Schema: sessions table with session_id (PK) and history (TEXT for chat logs).
 
-##Video Demo Link
+## Video Demo Link
