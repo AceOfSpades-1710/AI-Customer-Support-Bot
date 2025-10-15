@@ -74,19 +74,25 @@ pip install flask groq dotenv psycopg2-binary -i https://pypi.tuna.tsinghua.edu.
 
 ## Project Structure
 
-AI Customer Care Bot/
-├── app.py          # Flask backend with Groq integration
-├── database.py     # Database operations for Neon Postgres
-├── faqs.json       # FAQ dataset
-├── .env            # Environment variables (API keys, DB connection)
-└── static/
-    └── index.html  # Frontend chat interface
+graph TD
+    A[AI Customer Care Bot] --> B(app.py)
+    A --> C(database.py)
+    A --> D(faqs.json)
+    A --> E(.env)
+    A --> F(static)
+    F --> G(index.html)
+
+    B --> H[Flask backend with Groq integration]
+    C --> I[Database operations for Neon Postgres]
+    D --> J[FAQ dataset]
+    E --> K[Environment variables (API keys, DB connection)]
+    G --> L[Frontend chat interface]
 
 ## Database Setup
 
-Migration: Switched from local SQLite (sessions.db) to Neon Postgres for scalable session tracking.
-Connection: Set NEON_KEY in .env with your Neon connection string.
-Install: pip install psycopg2-binary.
-Schema: sessions table with session_id (PK) and history (TEXT for chat logs).
+- **Migration: Switched from local SQLite (sessions.db) to Neon Postgres for scalable session tracking.
+- **Connection: Set NEON_KEY in .env with your Neon connection string.
+- **Install: pip install psycopg2-binary.
+- **Schema: sessions table with session_id (PK) and history (TEXT for chat logs).
 
 ## Video Demo Link
