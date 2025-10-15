@@ -74,10 +74,10 @@ pip install flask groq dotenv psycopg2-binary -i https://pypi.tuna.tsinghua.edu.
 
 ## Database Setup
 
-- **Migration: Switched from local SQLite (sessions.db) to Neon Postgres for scalable session tracking.
-- **Connection: Set NEON_KEY in .env with your Neon connection string.
-- **Install: pip install psycopg2-binary.
-- **Schema: sessions table with session_id (PK) and history (TEXT for chat logs).
+- **Migration**: Switched from local SQLite (sessions.db) to Neon Postgres for scalable session tracking.
+- **Connection**: Set NEON_KEY in .env with your Neon connection string.
+- **Install**: pip install psycopg2-binary.
+- **Schema**: sessions table with session_id (PK) and history (TEXT for chat logs).
 
 ## Video Demo Link
 
