@@ -1,0 +1,16 @@
+{
+  "faqs": [
+    {
+      "question": "What is your return policy?",
+      "answer": "You can return items within 30 days for a full refund."
+    },
+    {
+      "question": "How do I track my order?",
+      "answer": "Use the tracking number sent to your email on our website."
+    },
+    {
+      "question": "Do you ship internationally?",
+      "answer": "Yes, we ship to most countries with additional fees."
+    }
+  ]
+}
