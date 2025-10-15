@@ -92,9 +92,3 @@ graph TD
     A --> F(static)
     F --> G(index.html)
 
-    B --> H["app.py"]
-    C --> I["database.py"]
-    D --> J["faqs.json"]
-    E --> K[".env"]
-    F --> L["static"]
-    G --> M["index.html"]
