@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Support Chatbot</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            background: #121212;
+            color: #f8f8f8;
+        }
+        #sidebar {
+            width: 250px;
+            background: #1e1e1e;
+            border-right: 1px solid #333;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+        #sidebar.open {
+            transform: translateX(0);
+        }
+        #sessions-list {
+            padding: 10px;
+        }
+        .session-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #333;
+        }
+        .session-item.active {
+            background: #333;
+        }
+        #chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        #chat {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        .message {
+            margin-bottom: 15px;
+        }
+        .message.user .content {
+            background: #2e7d32;
+            padding: 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .message.assistant .content {
+            background: #333;
+            padding: 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        #input-container {
+            display: flex;
+            border-top: 1px solid #333;
+        }
+        #query {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+            background: #1e1e1e;
+            color: white;
+        }
+        #send-btn, #new-chat-btn, #toggle-sidebar {
+            padding: 10px 15px;
+            border: none;
+            background: #2e7d32;
+            color: white;
+            cursor: pointer;
+        }
+        #header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1e1e1e;
+            padding: 10px;
+            border-bottom: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <div id="header">
+            <button id="toggle-sidebar">☰</button>
+            <button id="new-chat-btn">New Chat</button>
+        </div>
+        <div id="sessions-list"></div>
+    </div>
+
+    <div id="chat-container">
+        <div id="chat"></div>
+        <div id="input-container">
+            <input type="text" id="query" placeholder="Type your message...">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleSidebar = document.getElementById('toggle-sidebar');
+        const newChatBtn = document.getElementById('new-chat-btn');
+        const sessionsList = document.getElementById('sessions-list');
+        const queryInput = document.getElementById('query');
+        const sendBtn = document.getElementById('send-btn');
+        const chat = document.getElementById('chat');
+        
+        let currentSessionId = localStorage.getItem('currentSessionId') || null;
+        let sessions = [];
+
+        // Toggle sidebar on mobile
+        toggleSidebar.addEventListener('click', () => sidebar.classList.toggle('open'));
+
+        // Load sessions and history
+        async function loadSessions() {
+            try {
+                const res = await fetch('/sessions');
+                if (!res.ok) throw new Error('Failed to fetch sessions');
+                const data = await res.json();
+                sessions = data.sessions || [];
+                renderSessions();
+                if (currentSessionId && sessions.find(s => s.id === currentSessionId)) {
+                    await loadSession(currentSessionId);
+                } else if (sessions.length > 0) {
+                    currentSessionId = sessions[0].id;
+                    await loadSession(currentSessionId);
+                } else {
+                    await startNewSession();
+                }
+            } catch (err) {
+                console.error('Load Sessions Error:', err);
+                await startNewSession();
+            }
+        }
+
+        // Render sessions in sidebar
+        function renderSessions() {
+            sessionsList.innerHTML = sessions.map(session => 
+                `<div class="session-item ${session.id === currentSessionId ? 'active' : ''}" onclick="loadSession('${session.id}')">
+                    ${session.preview}
+                </div>`
+            ).join('');
+        }
+
+        // Load a specific session's history
+        async function loadSession(sessionId) {
+            try {
+                currentSessionId = sessionId;
+                localStorage.setItem('currentSessionId', sessionId);
+                const res = await fetch(`/session/${sessionId}`);
+                if (!res.ok) throw new Error('Failed to load session');
+                const data = await res.json();
+                renderChat(data.history || []);
+                renderSessions();
+                sidebar.classList.remove('open');
+            } catch (err) {
+                console.error('Load Session Error:', err);
+                chat.innerHTML = '<div class="message assistant"><div class="content">Error loading session. Start a new chat.</div></div>';
+            }
+        }
+
+        // Start new session
+        async function startNewSession() {
+            try {
+                currentSessionId = 'user_' + Math.random().toString(36).substring(7);
+                localStorage.setItem('currentSessionId', currentSessionId);
+                await fetch('/sessions/new', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ session_id: currentSessionId })
+                });
+                chat.innerHTML = '<div class="message assistant"><div class="content">Welcome! How can I assist you today?</div></div>';
+                await loadSessions();
+            } catch (err) {
+                console.error('New Session Error:', err);
+                chat.innerHTML = '<div class="message assistant"><div class="content">Failed to start new session. Try again.</div></div>';
+            }
+        }
+
+        newChatBtn.addEventListener('click', startNewSession);
+
+        // Render chat history
+        function renderChat(history) {
+            chat.innerHTML = (history || []).map(msg => 
+                `<div class="message ${msg.role}">
+                    <div class="content">${msg.content}</div>
+                </div>`
+            ).join('');
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // Send message
+        async function sendMessage() {
+            const query = queryInput.value.trim();
+            if (!query) return;
+            renderChat([{role: 'user', content: query}]);
+            queryInput.value = '';
+            try {
+                const res = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ session_id: currentSessionId, query: query })
+                });
+                if (!res.ok) throw new Error('API request failed');
+                const data = await res.json();
+                if (data.error) {
+                    renderChat([{role: 'assistant', content: `Error: ${data.error}` }]);
+                } else {
+                    renderChat([{role: 'assistant', content: data.response }]);
+                }
+            } catch (err) {
+                console.error('Send Message Error:', err);
+                renderChat([{role: 'assistant', content: 'Sorry, something went wrong.' }]);
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        queryInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+        // Initial load
+        loadSessions();
+    </script>
+</body>
+</html>
