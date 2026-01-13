@@ -1,4 +1,4 @@
-# AI Customer Support Bot
+# Vanessa: AI Customer Support Bot
 
 This repository contains an AI-powered customer support bot built with Flask, integrated with the Groq LLM, and featuring contextual memory and session tracking using Neon Postgres. The bot provides FAQ-based responses, escalation suggestions, and a responsive chat interface.
 
